@@ -104,6 +104,8 @@
 
 #include "global_constants.hpp"
 
+#include "util/led_control.hpp"
+
 // #include "light_sensors/light_sensor_reader.hpp"
 
 #define DEBUG_RECEIVER
@@ -331,11 +333,12 @@ public:
         // Try to detect a start on one of the photodiodes
         if (startEdgeDetected)
         {
+            setLedColour(GREEN);
             #ifdef DEBUG_RECEIVER
-            Serial.println("Gesture was detected, looking for end of gesture...");
+            Serial.println("Gesture detected. Collecting data...");//, looking for end of gesture...");
             #endif
 
-            bool endDetected = false;
+            // bool endDetected = false;
 
             // Read enough more data to avoid buffer overflow when checking end
             // of gesture if more samples are checked for end than for start

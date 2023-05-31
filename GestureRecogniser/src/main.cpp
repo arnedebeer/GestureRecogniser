@@ -65,11 +65,12 @@ void recalibrate()
 void setupLightIntensityRegulator()
 {
 	lightIntensityRegulator = new LightIntensityRegulator();
-	recalibrateTimerID = timer.setInterval(RECALIBRATE_PERIOD, []() { 
-		timer.disable(sampleTimerID);
-		lightIntensityRegulator->calibrateSensors(); 
-		timer.enable(sampleTimerID);
-	});
+	// recalibrateTimerID = timer.setInterval(RECALIBRATE_PERIOD, []() { 
+	// 	timer.disable(sampleTimerID);
+	// 	lightIntensityRegulator->calibrateSensors();
+	// 	gestureDetector->recalibrateThresholds();
+	// 	timer.enable(sampleTimerID);
+	// });
 }
 
 void setup()
@@ -85,8 +86,10 @@ void setup()
 	setLedColour(RED);
 
 	setupPhotodiodes();
-	setupGestureDetector();
+
+	// Light intensity regulator should be setup before the gesture detector
 	setupLightIntensityRegulator();
+	setupGestureDetector();
 
 	// Setup model wrapper which will load the model and handle all machine learning related stuff
 	modelWrapper = new ModelWrapper();
@@ -151,13 +154,26 @@ void loop()
 
 void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_LENGTH])
 {
+	// When data collection is done set it to white to indicate that inference is running
+	setLedColour(WHITE);
+
 	Serial.println("Data for gesture collected. Passing data to model and starting inference...");
 	Serial.println();
 
+	// Start measuring the time it takes to run the inference
+	auto start = millis();
+
 	float* result = modelWrapper->infer(photodiodeData);
 
-	Serial.println("Inference finished.");
-	Serial.println();
+	// Stop measuring the time it takes to run the inference
+	auto stop = millis();
+
+	// Calculate the time it took to run the inference
+	auto duration = stop - start;
+
+	Serial.print("Inference finished in: ");
+	Serial.print(duration);
+	Serial.println(" milliseconds.");
 
 	// Print the result array
 	Serial.print("Result array: ");
@@ -191,4 +207,7 @@ void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_
 
 	// Add a delay to slow down the serial prints
 	delay(500);
+
+	// Turn on the blue LED to indicate that it is ready to start collecting data again
+	setLedColour(BLUE);
 }
