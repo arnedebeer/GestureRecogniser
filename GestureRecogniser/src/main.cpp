@@ -12,7 +12,7 @@
 #include "light_sensors/light_intensity_regulator.hpp"
 #include "edge_detector.cpp"
 
-#include "sample_data/sample_data.hpp"
+#include "util/led_control.hpp"
 
 ModelWrapper* modelWrapper;
 LightIntensityRegulator* lightIntensityRegulator;
@@ -44,42 +44,58 @@ void setupGestureDetector()
 	sampleTimerID = timer.setInterval(READ_PERIOD, []() { gestureDetector->detect_gesture(); });
 }
 
-void recalibrateSensors()
+void recalibrate()
 {
+	// Disable timer to prevent the gesture detector from running while the sensors are being recalibrated
+	timer.disable(sampleTimerID);
+
+	// Turn on the red LED to indicate that the recalibration has started
+	setLedColour(RED);
+
+	// Recalibrate the light sensors. This will change the LED to indicate the result of the recalibration.
 	lightIntensityRegulator->calibrateSensors();
+
+	// Recalibrate the gesture detector
+	gestureDetector->recalibrateThresholds();
+
+	// Re-enable the timer
+	timer.enable(sampleTimerID);
+}
+
+void setupLightIntensityRegulator()
+{
+	lightIntensityRegulator = new LightIntensityRegulator();
+	recalibrateTimerID = timer.setInterval(RECALIBRATE_PERIOD, []() { 
+		timer.disable(sampleTimerID);
+		lightIntensityRegulator->calibrateSensors(); 
+		timer.enable(sampleTimerID);
+	});
 }
 
 void setup()
 {
 	Serial.begin(115200);
-	delay(5000);
-
-	pinMode(LED_RED, OUTPUT);
-	pinMode(LED_GREEN, OUTPUT);
-	pinMode(LED_BLUE, OUTPUT);
-
-	digitalWrite(LED_RED, LOW);
-	digitalWrite(LED_GREEN, LOW);
-	digitalWrite(LED_BLUE, LOW);
-
 	delay(2000);
 
-	digitalWrite(LED_RED, HIGH);
-	digitalWrite(LED_GREEN, LOW);
-	digitalWrite(LED_BLUE, HIGH);
+	Serial.print("Setup started...");
+
+	setupLeds();
+
+	// Turn on the red LED to indicate that the setup has started
+	setLedColour(RED);
 
 	setupPhotodiodes();
 	setupGestureDetector();
-
-	lightIntensityRegulator = new LightIntensityRegulator();
-	// recalibrateTimerID = timer.setInterval(RECALIBRATE_PERIOD, recalibrateSensors);
+	setupLightIntensityRegulator();
 
 	// Setup model wrapper which will load the model and handle all machine learning related stuff
 	modelWrapper = new ModelWrapper();
 
-	Serial.println("Setup complete.");
+	// Turn on the blue LED to indicate that the setup has finished 
+	// and the device is ready to start collecting data
+	setLedColour(BLUE);
 
-	// // For testing purposes infer sample data from sample_data.hpp
+	Serial.println("Done.");
 	// Serial.println("Starting sample data inference.");
 	// float* result = modelWrapper->infer(DUMMY_LEFT_SWIPE);
 

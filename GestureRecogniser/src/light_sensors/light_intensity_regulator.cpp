@@ -8,6 +8,8 @@
 
 #include "light_intensity_regulator.hpp"
 
+#include "util/led_control.hpp"
+
 // Resistor comparator function for sorting in decreasing order.
 bool comparator(Resistor const &a, Resistor const &b)
 {
@@ -47,7 +49,7 @@ void LightIntensityRegulator::calibrateSensors()
 		if (!this->resistorDown())
 		{
 			// Required resistor does not exist, set red LED
-			digitalWrite(22, LOW);
+			setLedColour(RED);
 			return;
 		}
 		else
@@ -63,18 +65,18 @@ void LightIntensityRegulator::calibrateSensors()
 		if (!this->resistorUp())
 		{
 			// Required resistor does not exist, set red LED
-			digitalWrite(22, LOW);
+			setLedColour(RED);
 		}
 		else
 		{
 			// System maybe configured correctly, set blue LED
-			digitalWrite(24, LOW);
+			setLedColour(BLUE);
 		}
 	}
 	else
 	{
 		// System configured correctly, set green LED
-		digitalWrite(23, LOW);
+		setLedColour(GREEN);
 	}
 
 	#ifdef DEBUG_PRINTS
