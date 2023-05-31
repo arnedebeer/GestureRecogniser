@@ -2,8 +2,6 @@
 
 #include "model_data.hpp" // The model converted by xxd -i
 
-#include "../pre-processing/preprocessor.hpp"
-
 // Uncomment this to _remove_ error reporting and lower memory space usage
 // #define TF_LITE_STRIP_ERROR_STRINGS
 
@@ -60,10 +58,8 @@ ModelWrapper::ModelWrapper()
 		TF_LITE_REPORT_ERROR(error_reporter, "Failed to allocate memory for tensor arena");
 		return;
 	}
-	// tensor_arena = new uint8_t[tensor_arena_size];
 
 	// Build an interpreter to run the model with
-	// interpreter = tflite::MicroInterpreter(model, *resolver, tensor_arena, tensor_arena_size); //, error_reporter);
 	static tflite::MicroInterpreter static_interpreter(model, *resolver, tensor_arena, tensor_arena_size);
 	interpreter = &static_interpreter;
 
@@ -78,7 +74,7 @@ ModelWrapper::ModelWrapper()
 	}
 
 	// Create preprocessor
-	// preprocessor = new GRPreprocessingPipeline();
+	preprocessor = new GRPreprocessingPipeline();
 
 	// TODO: Use this to specify the tensor_arena_size
 	size_t used_bytes = interpreter->arena_used_bytes();
@@ -94,16 +90,8 @@ ModelWrapper::ModelWrapper()
 	output = interpreter->typed_output_tensor<float>(0);
 }
 
-float *ModelWrapper::getInputBuffer()
-{
-	// TODO: Don't use data.f directly
-	return input;
-}
-
 float* ModelWrapper::infer(uint16_t inputData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_LENGTH]) 
 {
-	GRPreprocessingPipeline* preprocessor = new GRPreprocessingPipeline();
-
 	// Print the inputData before processing
 	Serial.println("Input data before processing:");
 	// for (int i = 0; i < NUM_LIGHT_SENSORS; i++)
@@ -226,9 +214,6 @@ float* ModelWrapper::infer(uint16_t inputData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_
 		TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed");
 	}
 
-	delete preprocessor;
-
-	// Read the predicted y value from the model's output tensor
-	// return output->data.f;
+	// Return the prediction array from the model's output tensor
 	return output;
 }

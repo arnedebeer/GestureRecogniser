@@ -99,56 +99,10 @@ void setup()
 	setLedColour(BLUE);
 
 	Serial.println("Done.");
-	// Serial.println("Starting sample data inference.");
-	// float* result = modelWrapper->infer(DUMMY_LEFT_SWIPE);
-
-	// Serial.println("Sample result array: ");
-
-	// // Print result
-	// for (size_t i = 0; i < NUM_FEATURES; i++)
-	// {
-	// 	Serial.print(result[i]);
-	// 	Serial.print(", ");
-	// }
-
-	// Serial.println("\n------------------\n");
 }
 
 void loop()
 {
-	// static unsigned long previousTime = 0UL;
-	// unsigned long currentTime = millis();
-	//
-	// if (currentTime - previousTime >= READ_PERIOD)
-	// {
-	// 	previousTime = currentTime;
-	//
-	// 	// sampleFromLightSensors();
-	// 	receiverLoopMain();
-	// }
-	//
-	// gestureDetector->run();
-	//
-	//
-	// // Testing analogRead every 10 ms
-	//
-	// static unsigned long previousTime = 0UL;
-	// unsigned long currentTime = millis();
-	//
-	// if (currentTime - previousTime >= 10)
-	// {
-	// 	previousTime = currentTime;
-	//
-	// 	for (size_t i = 0; i < NUM_LIGHT_SENSORS; i++)
-	// 	{
-	// 		uint16_t value = analogRead(PHOTO_DIODE_PINS[i]);
-	// 		// Serial.print(analogRead(PHOTO_DIODE_PINS[i]));
-	// 		Serial.print(value);
-	// 		Serial.print(", ");
-	// 	}
-	// 	Serial.println();
-	// }
-
 	timer.run();
 }
 
@@ -158,7 +112,6 @@ void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_
 	setLedColour(WHITE);
 
 	Serial.println("Data for gesture collected. Passing data to model and starting inference...");
-	Serial.println();
 
 	// Start measuring the time it takes to run the inference
 	auto start = millis();
@@ -195,15 +148,14 @@ void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_
 		}
 	}
 
-	// // Print the result
-	// Serial.print("Result: ");
-	// Serial.println(maxIndex);
-
 	// Print the gesture name and confidence
 	Serial.print("Predicted gesture: ");
 	Serial.print(GESTURE_NAMES[maxIndex]);
 	Serial.print(", with confidence: ");
 	Serial.println(result[maxIndex]);
+
+	// Turn on the red LED to indicate that it's done with inference and not yet ready to collect data again
+	setLedColour(RED);
 
 	// Add a delay to slow down the serial prints
 	delay(500);

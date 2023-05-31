@@ -11,18 +11,7 @@
 #include "tensorflow/lite/micro/micro_interpreter.h"				  	// Provides loading and running of models
 #include "tensorflow/lite/schema/schema_generated.h"				  	// Contains the schema for the TFLite 'FlatBuffer' model file format
 
-// #include "../pre-processing/preprocessor.hpp"
-
-// namespace tflite
-// {
-//     template <unsigned int tOpCount>
-//     class MicroMutableOpResolver;
-//     class ErrorReporter;
-//     class Model;
-//     class MicroInterpreter;
-// } // namespace tflite
-
-// struct TfLiteTensor;
+#include "../pre-processing/preprocessor.hpp"
 
 class ModelWrapper
 {
@@ -37,9 +26,10 @@ class ModelWrapper
             // delete input;
             // delete output;
             // delete tensor_arena;
+
+            delete preprocessor;
         }
 
-        float* getInputBuffer();
         float* infer(uint16_t input[NUM_LIGHT_SENSORS][GESTURE_BUFFER_LENGTH]);
 
     private:
@@ -47,9 +37,9 @@ class ModelWrapper
         tflite::ErrorReporter* error_reporter;
         const tflite::Model* model;
         tflite::MicroInterpreter* interpreter;
+
+        GRPreprocessingPipeline* preprocessor;
         
-        // TfLiteTensor* input;
-        // TfLiteTensor* output;
         float* input;
         float* output;
 
