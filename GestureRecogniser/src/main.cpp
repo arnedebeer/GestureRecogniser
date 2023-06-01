@@ -10,19 +10,20 @@
 #include "model/gestures.hpp"
 
 #include "light_sensors/light_intensity_regulator.hpp"
-#include "edge_detector.cpp"
+#include "gesture_detector.hpp"
 
 #include "util/led_control.hpp"
 
 ModelWrapper* modelWrapper;
 LightIntensityRegulator* lightIntensityRegulator;
-GestureEdgeDetectors* gestureDetector;
+GestureDetector* gestureDetector;
 
 // Timers for managing sample rate and recalibrating the sensitivity of the light sensors periodically.
 SimpleTimer timer;
 int sampleTimerID;
 int recalibrateTimerID;
 
+// GestureDetector::GestureDetectedCallback gestureDetectedCallback;
 void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_LENGTH]);
 
 void setupPhotodiodes()
@@ -35,13 +36,13 @@ void setupPhotodiodes()
 
 void setupGestureDetector()
 {
-	gestureDetector = new GestureEdgeDetectors();
+	gestureDetector = new GestureDetector();
 	gestureDetector->setGestureDetectedCallback(gestureDetectedCallback);
 
 	gestureDetector->setResetCallback([]() { timer.restartTimer(sampleTimerID); });
 
 	// Setup timer to call detect gesture every READ_PERIOD milliseconds
-	sampleTimerID = timer.setInterval(READ_PERIOD, []() { gestureDetector->detect_gesture(); });
+	sampleTimerID = timer.setInterval(READ_PERIOD, []() { gestureDetector->detectGesture(); });
 }
 
 void recalibrate()
