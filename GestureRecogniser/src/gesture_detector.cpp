@@ -79,9 +79,8 @@ void GestureDetector::detectGesture()
     if (startEdgeDetected)
     {
         setLedColour(GREEN);
-        #ifdef DEBUG_RECEIVER
-        Serial.println("Gesture detected. Collecting data...");
-        #endif
+        
+        Serial.print("Gesture detected. Collecting data...");
 
         // Read enough more data to avoid buffer overflow when checking end
         // of gesture if more samples are checked for end than for start
@@ -112,6 +111,8 @@ void GestureDetector::detectGesture()
             // Allow for new data to come in
             delay(READ_PERIOD);
         }
+
+        Serial.println("Done.");
 
         // Call the gestureDetectedCallback function with the gesture data
         if (gestureDetectedCallback != nullptr)

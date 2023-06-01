@@ -15,35 +15,35 @@
 
 class ModelWrapper
 {
-    public:
-        // ModelWrapper(tflite::ErrorReporter* error_reporter, const tflite::Model* model);
-        ModelWrapper();
-        ~ModelWrapper() {
-            // delete resolver;
-            // delete error_reporter;
-            // delete model;
-            // delete interpreter;
-            // delete input;
-            // delete output;
-            // delete tensor_arena;
+public:
+    ModelWrapper();
+    ~ModelWrapper() {
+        // delete resolver;
+        // delete error_reporter;
+        // delete model;
+        // delete interpreter;
+        // delete input;
+        // delete output;
+        // delete tensor_arena;
 
-            delete preprocessor;
-        }
+        delete preprocessor;
+    }
 
-        float* infer(uint16_t input[NUM_LIGHT_SENSORS][GESTURE_BUFFER_LENGTH]);
+    // This methods preprocesses the input data, reshapes it and then runs the model on it
+    float* infer(uint16_t input[NUM_LIGHT_SENSORS][GESTURE_BUFFER_LENGTH]);
 
-    private:
-        tflite::MicroMutableOpResolver<12>* resolver;
-        tflite::ErrorReporter* error_reporter;
-        const tflite::Model* model;
-        tflite::MicroInterpreter* interpreter;
+private:
+    tflite::MicroMutableOpResolver<12>* resolver;
+    tflite::ErrorReporter* error_reporter;
+    const tflite::Model* model;
+    tflite::MicroInterpreter* interpreter;
 
-        GRPreprocessingPipeline* preprocessor;
-        
-        float* input;
-        float* output;
+    GRPreprocessingPipeline* preprocessor;
+    
+    float* input;
+    float* output;
 
-        uint8_t* tensor_arena;
+    uint8_t* tensor_arena;
 };  // class ModelWrapper
 
 #endif // MODEL_WRAPPER_HPP

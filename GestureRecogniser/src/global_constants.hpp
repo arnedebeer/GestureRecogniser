@@ -1,6 +1,9 @@
 #ifndef GLOBAL_CONSTANTS_HPP
 #define GLOBAL_CONSTANTS_HPP
 
+// Define DEBUG_PRINTS in order to view more information in the serial monitor.
+// #define DEBUG_PRINTS
+
 // Number of OPT101 photodiode sensors used.
 #define NUM_LIGHT_SENSORS 3
 

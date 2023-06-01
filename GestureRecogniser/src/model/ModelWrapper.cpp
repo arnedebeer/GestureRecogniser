@@ -92,20 +92,8 @@ ModelWrapper::ModelWrapper()
 
 float* ModelWrapper::infer(uint16_t inputData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_LENGTH]) 
 {
-	// Print the inputData before processing
+	#ifdef DEBUG_PRINTS
 	Serial.println("Input data before processing:");
-	// for (int i = 0; i < NUM_LIGHT_SENSORS; i++)
-	// {
-	// 	Serial.print("Sensor ");
-	// 	Serial.print(i);
-	// 	Serial.print(": ");
-	// 	for (int j = 0; j < NUM_DATAPOINTS; j++)
-	// 	{
-	// 		Serial.print(inputData[i][j]);
-	// 		Serial.print(" ");
-	// 	}
-	// 	Serial.println();
-	// }
 	Serial.print("[");
 	for (int i = 0; i < GESTURE_BUFFER_LENGTH; i++)
 	{
@@ -124,46 +112,36 @@ float* ModelWrapper::infer(uint16_t inputData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_
 		}
 	}
 	Serial.println("]");
+	#endif // DEBUG_PRINTS
 
 	Serial.print("Running pre-processing pipeline...");
 	preprocessor->RunPipeline(inputData);
-	Serial.println("finished.");
+	Serial.println("Done.");
 
 	float (* processedData)[100] = preprocessor->getPipelineOutput();
-
-	// // Print the inputData after processing
-	// Serial.println("Input data after processing:");
-	// for (int i = 0; i < NUM_LIGHT_SENSORS; i++)
-	// {
-	// 	Serial.print("Sensor ");
-	// 	Serial.print(i);
-	// 	Serial.print(": ");
-	// 	for (int j = 0; j < NUM_DATAPOINTS; j++)
-	// 	{
-	// 		Serial.print(processedData[i][j]);
-	// 		Serial.print(" ");
-	// 	}
-	// 	Serial.println();
-	// }
-	// Serial.print("[");
-	// for (int i = 0; i < GESTURE_BUFFER_LENGTH; i++)
-	// {
-	// 	Serial.print("[");
-	// 	for (int j = 0; j < NUM_LIGHT_SENSORS; j++)
-	// 	{
-	// 		float value = processedData[j][i];
-	// 		Serial.print(value);
-	// 		if (j < NUM_LIGHT_SENSORS - 1) {
-	// 			Serial.print(", ");
-	// 		}
-	// 	}
-	// 	if (i < GESTURE_BUFFER_LENGTH - 1) {
-	// 		Serial.println("],");
-	// 	} else {
-	// 		Serial.println("]");
-	// 	}
-	// }
-	// Serial.println("]");
+	
+	#ifdef DEBUG_PRINTS
+	Serial.println("Input data after processing:");
+	Serial.print("[");
+	for (int i = 0; i < GESTURE_BUFFER_LENGTH; i++)
+	{
+		Serial.print("[");
+		for (int j = 0; j < NUM_LIGHT_SENSORS; j++)
+		{
+			float value = processedData[j][i];
+			Serial.print(value);
+			if (j < NUM_LIGHT_SENSORS - 1) {
+				Serial.print(", ");
+			}
+		}
+		if (i < GESTURE_BUFFER_LENGTH - 1) {
+			Serial.println("],");
+		} else {
+			Serial.println("]");
+		}
+	}
+	Serial.println("]");
+	#endif // DEBUG_PRINTS
 
 	// Before passing the data to the model we need to reshape the data to the expected shape (20, 5, 3)
 	// We can do this by reinterpreting the array with different indices.
@@ -172,22 +150,16 @@ float* ModelWrapper::infer(uint16_t inputData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_
 	float (* reshapedData)[DIM3][DIM2][DIM1] = (float (*)[DIM3][DIM2][DIM1]) processedData;
 
 	size_t current_index = 0;
-	// Serial.println("Input data after reshaping:");
 	for (int dim2 = 0; dim2 < DIM2; dim2++)
 	{
 		for (int dim1 = 0; dim1 < DIM1; dim1++)
 		{
 			for (int dim3 = 0; dim3 < DIM3; dim3++)
 			{
-				// Serial.print((*reshapedData)[dim3][dim2][dim1]);
-				// Serial.print(" ");
-
 				input[current_index] = (*reshapedData)[dim3][dim2][dim1];
 				current_index++;
 			}
-			// Serial.println();
 		}
-		// Serial.println();
 	}
 
 	// Check the input tensor's dimensions

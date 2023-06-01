@@ -4,8 +4,6 @@
 
 #include "global_constants.hpp"
 
-#define DEBUG_PRINTS
-
 #include "model/ModelWrapper.hpp"
 #include "model/gestures.hpp"
 
@@ -77,7 +75,7 @@ void setupLightIntensityRegulator()
 void setup()
 {
 	Serial.begin(115200);
-	delay(2000);
+	delay(3000);
 
 	Serial.print("Setup started...");
 
@@ -90,6 +88,10 @@ void setup()
 
 	// Light intensity regulator should be setup before the gesture detector
 	setupLightIntensityRegulator();
+
+	// Add delay so result (LED colour) of recalibration is visible
+	delay(1000);
+
 	setupGestureDetector();
 
 	// Setup model wrapper which will load the model and handle all machine learning related stuff
@@ -112,20 +114,18 @@ void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_
 	// When data collection is done set it to white to indicate that inference is running
 	setLedColour(WHITE);
 
-	Serial.println("Data for gesture collected. Passing data to model and starting inference...");
+	#ifdef DEBUG_PRINTS
+	Serial.println("Data for gesture collected. Passing data to model and starting inference.");
+	#endif
 
-	// Start measuring the time it takes to run the inference
 	auto start = millis();
-
 	float* result = modelWrapper->infer(photodiodeData);
-
-	// Stop measuring the time it takes to run the inference
 	auto stop = millis();
 
 	// Calculate the time it took to run the inference
 	auto duration = stop - start;
 
-	Serial.print("Inference finished in: ");
+	Serial.print("Pre-processing and inference finished in: ");
 	Serial.print(duration);
 	Serial.println(" milliseconds.");
 
