@@ -38,7 +38,7 @@ private:
     const tflite::Model* model;
     tflite::MicroInterpreter* interpreter;
 
-    GRPreprocessingPipeline* preprocessor;
+    Preprocessor* preprocessor;
     
     float* input;
     float* output;

@@ -74,7 +74,7 @@ ModelWrapper::ModelWrapper()
 	}
 
 	// Create preprocessor
-	preprocessor = new GRPreprocessingPipeline();
+	preprocessor = new Preprocessor();
 
 	// TODO: Use this to specify the tensor_arena_size
 	size_t used_bytes = interpreter->arena_used_bytes();
@@ -115,7 +115,7 @@ float* ModelWrapper::infer(uint16_t inputData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_
 	#endif // DEBUG_PRINTS
 
 	Serial.print("Running pre-processing pipeline...");
-	preprocessor->RunPipeline(inputData);
+	preprocessor->runPipeline(inputData);
 	Serial.println("Done.");
 
 	float (* processedData)[100] = preprocessor->getPipelineOutput();

@@ -31,8 +31,8 @@ def preprocess_data(signal: np.ndarray) -> np.ndarray:
         np.ndarray: The preprocessed signal.
     """
 
-    #### signal = np.apply_along_axis(low_pass_filter, 0, signal, 27, 100)
-    # signal = np.apply_along_axis(low_pass_filter, 0, signal, 26, 100)
+    ### signal = np.apply_along_axis(low_pass_filter, 0, signal, 25, 100)
+    signal = np.apply_along_axis(butterworth_filter, 0, signal)
 
     signal = normalize_signal(signal)
     signal = remove_mean_divide_std(signal)
@@ -77,9 +77,9 @@ def low_pass_filter(data: list, band_limit: int, sampling_rate: int = 100):
     Applies a low pass filter to the data. Source: https://stackoverflow.com/questions/70825086/python-lowpass-filter-with-only-numpy
 
     Args:	
-    data (list): The data to be filtered.	
-    band_limit (int): The band limit of the filter.	
-    sampling_rate (int, optional): The sampling rate of the data. Defaults to 100.
+        data (list): The data to be filtered.	
+        band_limit (int): The band limit of the filter.	
+        sampling_rate (int, optional): The sampling rate of the data. Defaults to 100.
     """
 
     # Ensure the band limit is less than half the sampling rate
@@ -90,21 +90,44 @@ def low_pass_filter(data: list, band_limit: int, sampling_rate: int = 100):
     F[cutoff_index + 1:] = 0
     return np.fft.irfft(F, n=data.size).real
 
-def high_pass_filter(data: list, band_limit: int, sampling_rate: int = 100):
+def butterworth_filter(data: list):
     """
-    Applies a high pass filter to the data. Source: https://stackoverflow.com/questions/70825086/python-lowpass-filter-with-only-numpy
+    Applies a butterworth filter to the data.
 
     Args:	
-    data (list): The data to be filtered.	
-    band_limit (int): The band limit of the filter.	
-    sampling_rate (int, optional): The sampling rate of the data. Defaults to 100.
+        data (list): The data to be filtered.	
     """
 
-    # Ensure the band limit is less than half the sampling rate
-    # assert band_limit < sampling_rate / 2, "Band limit must be less than half the sampling rate."
+    # Coefficients for a 2nd order Butterworth filter
+    # Calculated using sample rate of 100 Hz and cutoff frequency of 25 Hz
+    a = [0.28094574, -0.18556054]
+    b = [0.2261537, 0.4523074, 0.2261537] 
 
-    cutoff_index = int(band_limit * data.size / sampling_rate)
-    F = np.fft.rfft(data)
-    F[:cutoff_index] = 0
-    F[-cutoff_index:] = 0
-    return np.fft.irfft(F, n=data.size).real
+    # Formula for 2nd order Butterworth filter, where a and b are the coefficients and x and y are the input and output respectively
+    # y[n] = a[0] * y[n-1] + a[1] * y[n-2] + b[0] * x[n] + b[1] * x[n-1] + b[2] * x[n-2]
+
+    # The first two values of the output are the same as the input
+    # The rest of the values are calculated using the formula above
+    for i in range(2, len(data)):
+        data[i] = a[0] * data[i-1] + a[1] * data[i-2] + b[0] * data[i] + b[1] * data[i-1] + b[2] * data[i-2]
+        
+    return data
+
+# def high_pass_filter(data: list, band_limit: int, sampling_rate: int = 100):
+#     """
+#     Applies a high pass filter to the data. Source: https://stackoverflow.com/questions/70825086/python-lowpass-filter-with-only-numpy
+
+#     Args:	
+#     data (list): The data to be filtered.	
+#     band_limit (int): The band limit of the filter.	
+#     sampling_rate (int, optional): The sampling rate of the data. Defaults to 100.
+#     """
+
+#     # Ensure the band limit is less than half the sampling rate
+#     # assert band_limit < sampling_rate / 2, "Band limit must be less than half the sampling rate."
+
+#     cutoff_index = int(band_limit * data.size / sampling_rate)
+#     F = np.fft.rfft(data)
+#     F[:cutoff_index] = 0
+#     F[-cutoff_index:] = 0
+#     return np.fft.irfft(F, n=data.size).real
