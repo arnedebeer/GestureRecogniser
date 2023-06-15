@@ -2,23 +2,23 @@ import tensorflow as tf
 
 import numpy as np
 
-def preprocess_layers(input_shape: tuple = (20, 5, 3)) -> tf.keras.Model:
+def preprocess_layers(input_shape: tuple = (20, 5, 3)) -> list:
     """
-    Creates a model that preprocesses the data. To be used in a tf.keras.Sequential model.
+    Creates a list of layers for pre-processing the data. To be used in a tf.keras.Sequential model.
 
     """
-    return tf.keras.models.Sequential([
+    return [
         # Pre-processing layers
         # layers.BatchNormalization(),
 
         # tf.keras.layers.Reshape(target_shape=input_shape),
 
-        # tf.keras.layers.Lambda(lambda x: preprocess_data(x)),
-
-        tf.keras.layers.RandomTranslation(fill_mode='nearest', height_factor=0.4, width_factor=0.1),
-        tf.keras.layers.RandomContrast(factor=0.8),
+        tf.keras.layers.RandomTranslation(fill_mode='nearest', height_factor=0.4, width_factor=0.25),
+        # tf.keras.layers.RandomRotation(factor=0.2),
+        tf.keras.layers.RandomContrast(factor=0.95),
         # layers.RandomCrop(height=20, width=4),
-    ])
+        # tf.keras.layers.GaussianNoise(0.2),
+    ]
 
 def preprocess_data(signal: np.ndarray) -> np.ndarray:
     """
@@ -31,15 +31,18 @@ def preprocess_data(signal: np.ndarray) -> np.ndarray:
         np.ndarray: The preprocessed signal.
     """
 
-    ### signal = np.apply_along_axis(low_pass_filter, 0, signal, 25, 100)
+    signal = rescale_signal(signal)
+
+    signal = remove_mean_divide_std(signal)
+
     signal = np.apply_along_axis(butterworth_filter, 0, signal)
 
-    signal = normalize_signal(signal)
-    signal = remove_mean_divide_std(signal)
+    # signal = np.apply_along_axis(low_pass_filter, 0, signal, 25, 100)
 
     return signal
 
-def normalize_signal(signal: np.ndarray) -> np.ndarray:
+# Rescale the signal to be between 0 and 1
+def rescale_signal(signal: np.ndarray) -> np.ndarray:
     """
     Normalizes the signal by dividing it by the maximum value.
 
@@ -51,6 +54,7 @@ def normalize_signal(signal: np.ndarray) -> np.ndarray:
     """
     return signal / np.max(signal, axis=0)
 
+# Normalize by using the Z-score
 def remove_mean_divide_std(signal: np.ndarray) -> np.ndarray:
     """
     Removes the mean from the signal and divides by the standard deviation.
@@ -65,7 +69,8 @@ def remove_mean_divide_std(signal: np.ndarray) -> np.ndarray:
     mean = np.mean(signal)
     std = np.std(signal)
 
-    # print(f"Mean: {mean}, Std: {std}")
+    # Cast to float
+    signal = signal.astype(np.float32)
 
     signal -= mean
     signal /= std
