@@ -1,0 +1,2 @@
+[submodule "GestureRecogniser/lib/Arduino_TensorFlowLite"]
+	url = https://github.com/tensorflow/tflite-micro-arduino-examples
