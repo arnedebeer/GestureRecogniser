@@ -80,6 +80,7 @@ void GestureDetector::detectGesture()
     {
         setLedColour(GREEN);
         
+        Serial.println("--------------------");
         Serial.print("Gesture detected. Collecting data...");
 
         // Read enough more data to avoid buffer overflow when checking end
@@ -126,7 +127,7 @@ void GestureDetector::detectGesture()
             taBuffer[i] = thresholdAdjustmentBuffer[i];
         }
 
-        // recalibrateThresholds(false);
+        recalibrateThresholds(false);
 
         count = 0;
 
@@ -165,9 +166,9 @@ bool GestureDetector::detectGestureEnd(uint16_t **signals)
 
 void GestureDetector::recalibrateThresholds(bool resetTaBuffer)
 {
-    #ifdef DEBUG_PRINTS
-    Serial.print("Recalibrating thresholds...");
-    #endif // DEBUG_PRINTS
+    // #ifdef DEBUG_PRINTS
+    // Serial.print("Recalibrating thresholds...");
+    // #endif // DEBUG_PRINTS
     for (int i = 0; i < NUM_LIGHT_SENSORS; i++)
     {
         uint16_t stable = QuickMedian<uint16_t>::GetMedian(thresholdAdjustmentBuffer[i], THRESHOLD_ADJ_BUFFER_LENGTH);
@@ -177,7 +178,7 @@ void GestureDetector::recalibrateThresholds(bool resetTaBuffer)
             taBuffer[i] = thresholdAdjustmentBuffer[i];
     }
 
-    #ifdef DEBUG_PRINTS
-    Serial.println("Done!");
-    #endif // DEBUG_PRINTS
+    // #ifdef DEBUG_PRINTS
+    // Serial.println("Done!");
+    // #endif // DEBUG_PRINTS
 }

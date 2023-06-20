@@ -114,9 +114,17 @@ float* ModelWrapper::infer(uint16_t inputData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_
 	Serial.println("]");
 	#endif // DEBUG_PRINTS
 
-	Serial.print("Running pre-processing pipeline...");
+	// Serial.print("Running pre-processing pipeline...");
+	auto start = micros();
 	preprocessor->runPipeline(inputData);
-	Serial.println("Done.");
+	auto stop = micros();
+
+	// Calculate the time it took to run the inference
+	auto duration = stop - start;
+
+	Serial.print("Pre-processing done in: ");
+	Serial.print(duration);
+	Serial.print(" microseconds. ");
 
 	float (* processedData)[100] = preprocessor->getPipelineOutput();
 	
@@ -180,7 +188,17 @@ float* ModelWrapper::infer(uint16_t inputData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_
 	// Serial.println(input_channels);
 
 	// Run the model on this input and make sure it succeeds
+	start = micros();
 	TfLiteStatus invoke_status = interpreter->Invoke();
+	stop = micros();
+
+	// Calculate the time it took to run the inference
+	duration = stop - start;
+
+	Serial.print("Inference finished in: ");
+	Serial.print(duration);
+	Serial.println(" microseconds.");
+
 	if (invoke_status != kTfLiteOk)
 	{
 		TF_LITE_REPORT_ERROR(error_reporter, "Invoke failed");

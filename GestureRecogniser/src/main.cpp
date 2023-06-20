@@ -118,16 +118,16 @@ void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_
 	Serial.println("Data for gesture collected. Passing data to model and starting inference.");
 	#endif
 
-	auto start = millis();
+	// auto start = millis();
 	float* result = modelWrapper->infer(photodiodeData);
-	auto stop = millis();
+	// auto stop = millis();
 
 	// Calculate the time it took to run the inference
-	auto duration = stop - start;
+	// auto duration = stop - start;
 
-	Serial.print("Pre-processing and inference finished in: ");
-	Serial.print(duration);
-	Serial.println(" milliseconds.");
+	// Serial.print("Pre-processing and inference finished in: ");
+	// Serial.print(duration);
+	// Serial.println(" milliseconds.");
 
 	// Print the result array
 	Serial.print("Result array: ");
