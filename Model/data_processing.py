@@ -13,7 +13,7 @@ def preprocess_layers(input_shape: tuple = (20, 5, 3)) -> list:
 
         # tf.keras.layers.Reshape(target_shape=input_shape),
 
-        tf.keras.layers.RandomTranslation(fill_mode='nearest', height_factor=0.4, width_factor=0.25),
+        tf.keras.layers.RandomTranslation(fill_mode='nearest', height_factor=0.3, width_factor=0.25),
         # tf.keras.layers.RandomRotation(factor=0.2),
         tf.keras.layers.RandomContrast(factor=0.95),
         # layers.RandomCrop(height=20, width=4),
