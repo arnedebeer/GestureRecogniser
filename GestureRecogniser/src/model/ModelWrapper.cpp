@@ -35,7 +35,6 @@ ModelWrapper::ModelWrapper()
 
 	resolver = new tflite::MicroMutableOpResolver<12>();
 
-	// TODO: What operations are needed for the model?
 	// Add all the operations to the resolver that are used in the model
 	resolver->AddFullyConnected();
 	resolver->AddMul();
@@ -67,7 +66,6 @@ ModelWrapper::ModelWrapper()
 	TfLiteStatus allocate_status = interpreter->AllocateTensors();
 	if (allocate_status != kTfLiteOk)
 	{
-		// TODO: Add specific error message (use allocate_status)
 		TF_LITE_REPORT_ERROR(error_reporter, "AllocateTensors() failed");
 
 		return;
@@ -76,17 +74,12 @@ ModelWrapper::ModelWrapper()
 	// Create preprocessor
 	preprocessor = new Preprocessor();
 
-	// TODO: Use this to specify the tensor_arena_size
+	// Use this to specify the tensor_arena_size
 	size_t used_bytes = interpreter->arena_used_bytes();
     TF_LITE_REPORT_ERROR(error_reporter, "Used bytes %d\n", used_bytes);
 
-	// Get information about the memory area to use for the model's input
-	// input = interpreter->input(0);
-	// interpreter->
+	// Get pointers to the model's input and output tensors
 	input = interpreter->typed_input_tensor<float>(0);
-
-	// Get information about the memory area to use for the model's output
-	// output = interpreter->output(0);
 	output = interpreter->typed_output_tensor<float>(0);
 }
 
@@ -169,23 +162,6 @@ float* ModelWrapper::infer(uint16_t inputData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_
 			}
 		}
 	}
-
-	// Check the input tensor's dimensions
-	// TfLiteTensor* input_tensor = interpreter->input(0);
-	// int batch_size = input_tensor->dims->data[0];
-	// int input_height = input_tensor->dims->data[1];
-	// int input_width = input_tensor->dims->data[2];
-	// int input_channels = input_tensor->dims->data[3];
-
-	// // Print the input tensor's dimensions
-	// Serial.print("Input tensor's dimensions: ");
-	// Serial.print(batch_size);
-	// Serial.print(", ");
-	// Serial.print(input_height);
-	// Serial.print(", ");
-	// Serial.print(input_width);
-	// Serial.print(", ");
-	// Serial.println(input_channels);
 
 	// Run the model on this input and make sure it succeeds
 	start = micros();

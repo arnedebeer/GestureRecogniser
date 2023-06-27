@@ -19,7 +19,7 @@ GestureDetector* gestureDetector;
 // Timers for managing sample rate and recalibrating the sensitivity of the light sensors periodically.
 SimpleTimer timer;
 int sampleTimerID;
-int recalibrateTimerID;
+// int recalibrateTimerID;
 
 // GestureDetector::GestureDetectedCallback gestureDetectedCallback;
 void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_LENGTH]);
@@ -111,25 +111,16 @@ void loop()
 
 void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_BUFFER_LENGTH])
 {
-	// When data collection is done set it to white to indicate that inference is running
+	// When data collection is done set it to white to indicate that inference is running.
 	setLedColour(WHITE);
 
 	#ifdef DEBUG_PRINTS
 	Serial.println("Data for gesture collected. Passing data to model and starting inference.");
 	#endif
 
-	// auto start = millis();
 	float* result = modelWrapper->infer(photodiodeData);
-	// auto stop = millis();
 
-	// Calculate the time it took to run the inference
-	// auto duration = stop - start;
-
-	// Serial.print("Pre-processing and inference finished in: ");
-	// Serial.print(duration);
-	// Serial.println(" milliseconds.");
-
-	// Print the result array
+	// Print the result array.
 	Serial.print("Result array: ");
 	for (size_t i = 0; i < NUM_FEATURES; i++)
 	{
@@ -139,7 +130,7 @@ void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_
 
 	Serial.println();
 
-	// Get the index of the highest value in the result array
+	// Get the index of the highest value in the result array.
 	int maxIndex = 0;
 	for (size_t i = 0; i < NUM_FEATURES; i++)
 	{
@@ -155,12 +146,13 @@ void gestureDetectedCallback(uint16_t photodiodeData[NUM_LIGHT_SENSORS][GESTURE_
 	Serial.print(", with confidence: ");
 	Serial.println(result[maxIndex]);
 
-	// Turn on the red LED to indicate that it's done with inference and not yet ready to collect data again
+	// Turn on the red LED to indicate that it's done with inference and not yet ready to collect data again.
 	setLedColour(RED);
 
-	// Add a delay to slow down the serial prints
+	// Add a delay to slow down the serial prints and avoid detecting the same gesture multiple times.
+	// Can be removed if desired.
 	delay(500);
 
-	// Turn on the blue LED to indicate that it is ready to start collecting data again
+	// Turn on the blue LED to indicate that it is ready to start collecting data again.
 	setLedColour(BLUE);
 }

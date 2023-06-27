@@ -26,7 +26,7 @@
 // Sampling period in milliseconds. 10ms -> 100Hz sampling rate. Change to 50 for 20Hz sampling rate.
 #define READ_PERIOD 10
 
-// Time between recalibration in milliseconds. Sets up a new LightIntensityRegulator every X ms.
-#define RECALIBRATE_PERIOD 5000
+// // Time between recalibration in milliseconds. Sets up a new LightIntensityRegulator every X ms. (not used)
+// #define RECALIBRATE_PERIOD 5000
 
 #endif // GLOBAL_CONSTANTS_HPP

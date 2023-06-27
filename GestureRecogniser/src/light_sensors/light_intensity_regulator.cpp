@@ -2,7 +2,7 @@
  * @file light_intensity_regulator.h
  * @author Stijn van de Water @ CSE3000 RP 2022
  *
- * Taken from: https://github.com/StijnW66/CSE3000-Gesture-Recognition/blob/e6f01a54d494be49a5eebb90f43460f3c43adf4f/src/diode_calibration/diode_calibration.h
+ * Modified from: https://github.com/StijnW66/CSE3000-Gesture-Recognition/blob/e6f01a54d494be49a5eebb90f43460f3c43adf4f/src/diode_calibration/diode_calibration.h
  *
  */
 

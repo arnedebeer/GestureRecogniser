@@ -18,14 +18,6 @@ class ModelWrapper
 public:
     ModelWrapper();
     ~ModelWrapper() {
-        // delete resolver;
-        // delete error_reporter;
-        // delete model;
-        // delete interpreter;
-        // delete input;
-        // delete output;
-        // delete tensor_arena;
-
         delete preprocessor;
     }
 

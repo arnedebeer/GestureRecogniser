@@ -17,9 +17,8 @@
 #define DETECTION_THRESHOLD_COEFF 0.85f
 #define THRESHOLD_ADJ_BUFFER_LENGTH 100
 
-// Minimum duration of a gesture, otherwise it is seen as noise and ignored
-#define GESTURE_MIN_TIME_MS 100
-
+// // Minimum duration of a gesture, otherwise it is seen as noise and ignored
+// #define GESTURE_MIN_TIME_MS 100
 
 const uint8_t PHOTO_DIODE_PINS[NUM_LIGHT_SENSORS] = {A0, A1, A2};
 
@@ -47,7 +46,7 @@ public:
     void detectGesture();
 
     bool detectGestureStart(uint16_t **signals);
-    bool detectGestureEnd(uint16_t **signals);
+    // bool detectGestureEnd(uint16_t **signals);
 
     void recalibrateThresholds(bool resetTaBuffer = true);
 

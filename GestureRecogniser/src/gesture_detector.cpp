@@ -151,18 +151,19 @@ bool GestureDetector::detectGestureStart(uint16_t **signals)
     return false;
 }
 
-bool GestureDetector::detectGestureEnd(uint16_t **signals)
-{
-    for (int i = 0; i < NUM_LIGHT_SENSORS; i++)
-    {
-        if (edgeDetectors[i].detectEdgeEnd(signals[i]))
-        {
-            return true;
-        }
-    }
+// Not used at this moment
+// bool GestureDetector::detectGestureEnd(uint16_t **signals)
+// {
+//     for (int i = 0; i < NUM_LIGHT_SENSORS; i++)
+//     {
+//         if (edgeDetectors[i].detectEdgeEnd(signals[i]))
+//         {
+//             return true;
+//         }
+//     }
 
-    return false;
-}
+//     return false;
+// }
 
 void GestureDetector::recalibrateThresholds(bool resetTaBuffer)
 {

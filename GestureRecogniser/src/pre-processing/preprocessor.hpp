@@ -8,9 +8,6 @@
 #include <stdint.h>
 
 #include "pre-processing/pipeline/MaxNormaliser.h"
-// #include "pre-processing/pipeline/FFTCutOffFilter.h"
-// #include "pre-processing/pipeline/SignalStretcher.h"
-// #include "pre-processing/pipeline/SignalFlipper.h"
 
 class Preprocessor {
 public:
