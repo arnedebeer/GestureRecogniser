@@ -2,7 +2,6 @@ import itertools
 from os import path
 import matplotlib.pyplot as plt
 import numpy as np
-# import data_processing
 
 def plot_data_as_image(feature: np.ndarray, label: str = "Photodiode Signals", reshape: bool = True):
     fig, ax = plt.subplots(1)

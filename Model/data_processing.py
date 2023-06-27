@@ -9,20 +9,18 @@ def preprocess_layers(input_shape: tuple = (20, 5, 3)) -> list:
     """
     return [
         # Pre-processing layers
-        # layers.BatchNormalization(),
-
         # tf.keras.layers.Reshape(target_shape=input_shape),
-
         tf.keras.layers.RandomTranslation(fill_mode='nearest', height_factor=0.3, width_factor=0.25),
-        # tf.keras.layers.RandomRotation(factor=0.2),
         tf.keras.layers.RandomContrast(factor=0.95),
-        # layers.RandomCrop(height=20, width=4),
         # tf.keras.layers.GaussianNoise(0.2),
     ]
 
 def preprocess_data(signal: np.ndarray) -> np.ndarray:
     """
-    Preprocesses the data by removing the mean and dividing by the standard deviation.
+    Preprocesses the data by:
+        - Rescaling the signal to be between 0 and 1
+        - Removing the mean and dividing by the standard deviation
+        - Applying a Butterworth filter
 
     Args:
         signal (np.ndarray): The signal to be preprocessed.

@@ -4,7 +4,7 @@ import keras.layers as layers
 
 import data_processing
 
-def experimental(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def experimental(input_shape: tuple, num_classes: int) -> list:
     """
     Experimental model for testing purposes.
     """
@@ -45,9 +45,9 @@ def experimental(input_shape: tuple, num_classes: int) -> tf.keras.Model:
         tf.keras.layers.Dense(num_classes, activation='softmax', name="predictions")
     ]
 
-def alexnet(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def alexnet(input_shape: tuple, num_classes: int) -> list:
     """
-    AlexNet model.
+    AlexNet model, but not really
     """
     return [
         # tf.keras.Input(shape=input_shape, name="sensor_image"), # 25, 4, 3
@@ -67,7 +67,7 @@ def alexnet(input_shape: tuple, num_classes: int) -> tf.keras.Model:
         tf.keras.layers.Dense(num_classes, activation="softmax", name="predictions"),
     ]
 
-def beernet(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def beernet(input_shape: tuple, num_classes: int) -> list:
     """
     BeerNet Model.
 
@@ -134,7 +134,7 @@ def beernet_lite(input_shape: tuple, num_classes: int) -> list:
         tf.keras.layers.Dense(units=num_classes, activation='softmax', name="predictions")
     ]
 
-def beernet_experimental(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def beernet_experimental(input_shape: tuple, num_classes: int) -> list:
     """
     BeerNet Model.
 
@@ -173,7 +173,7 @@ def beernet_experimental(input_shape: tuple, num_classes: int) -> tf.keras.Model
         tf.keras.layers.Dense(units=num_classes, activation='softmax', name="predictions")
     ]
 
-def fcn(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def fcn(input_shape: tuple, num_classes: int) -> list:
     """
     Fully Convolutional Network.
 
@@ -196,9 +196,9 @@ def fcn(input_shape: tuple, num_classes: int) -> tf.keras.Model:
         tf.keras.layers.Dense(units=num_classes, activation='softmax', name="predictions")
     ] 
 
-### Models from last year ###
+### Models from last year (2022) ###
 
-def slam_cnn(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def slam_cnn(input_shape: tuple, num_classes: int) -> list:
     return [
         # tf.keras.Input(shape=input_shape, name="sensor_image"),
         tf.keras.layers.Conv2D(32, kernel_size=(2, 2), strides=(1, 1), activation="relu"),
@@ -210,7 +210,7 @@ def slam_cnn(input_shape: tuple, num_classes: int) -> tf.keras.Model:
         tf.keras.layers.Dense(num_classes, activation="softmax", name="predictions"),
     ]
 
-def slam_cnn_padding(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def slam_cnn_padding(input_shape: tuple, num_classes: int) -> list:
     return [
         # tf.keras.Input(shape=input_shape, name="sensor_image"),
         tf.keras.layers.ZeroPadding2D(padding=(0, 2)),
@@ -224,7 +224,7 @@ def slam_cnn_padding(input_shape: tuple, num_classes: int) -> tf.keras.Model:
         tf.keras.layers.Dense(num_classes, activation="softmax", name="predictions"),
     ]
 
-def slam_cnn_padding_lite(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def slam_cnn_padding_lite(input_shape: tuple, num_classes: int) -> list:
     return [
         # tf.keras.Input(shape=input_shape, name="sensor_image"),
         tf.keras.layers.ZeroPadding2D(padding=(0, 2)),
@@ -238,7 +238,7 @@ def slam_cnn_padding_lite(input_shape: tuple, num_classes: int) -> tf.keras.Mode
         tf.keras.layers.Dense(num_classes, activation="softmax", name="predictions"),
     ]
 
-def slam_cnn_padding_pyramid(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def slam_cnn_padding_pyramid(input_shape: tuple, num_classes: int) -> list:
     return [
         # tf.keras.Input(shape=input_shape, name="sensor_image"),
         tf.keras.layers.ZeroPadding2D(padding=(0, 2)),
@@ -252,7 +252,7 @@ def slam_cnn_padding_pyramid(input_shape: tuple, num_classes: int) -> tf.keras.M
         tf.keras.layers.Dense(num_classes, activation="softmax", name="predictions"),
     ]
 
-def slam_cnn_padding_pyramid_lite(input_shape: tuple, num_classes: int) -> tf.keras.Model:
+def slam_cnn_padding_pyramid_lite(input_shape: tuple, num_classes: int) -> list:
     return [
         # tf.keras.Input(shape=input_shape, name="sensor_image"),
         tf.keras.layers.ZeroPadding2D(padding=(0, 2)),
@@ -297,7 +297,7 @@ class ModelName(Enum):
 
 class ModelConstructor:
 
-    def get_model(model: ModelName, input_shape: tuple, num_classes: int, include_preprocessing: bool = True) -> tf.keras.Model:
+    def get_model(model: ModelName, input_shape: tuple, num_classes: int, include_preprocessing: bool = True) -> list:
         """
         Model constructor
         :param model_name: name of the model
@@ -313,16 +313,11 @@ class ModelConstructor:
         if include_preprocessing:
             for layer in data_processing.preprocess_layers(input_shape):
                 new_model.add(layer)
-            # new_model.add(data_processing.preprocess_layers(input_shape))
 
         layers = model.value[0](input_shape, num_classes)
 
         # For all layers, add to new_model
         for layer in layers:
             new_model.add(layer)
-
-        # new_model.add(model.value[0](input_shape, num_classes))
-
-        # return model.value[0](input_shape, num_classes)
 
         return new_model

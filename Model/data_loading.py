@@ -125,14 +125,14 @@ def get_data_and_labels_from_candidates(candidates: list, all_data: dict, input_
         for gesture in all_data[candidate]:
             for sample in all_data[candidate][gesture]:
                 
-                # data_visualisation.plot_data_as_image(sample, label=f"{gesture} - Before Pre-processing")
-                # data_visualisation.plot_data_as_graph(sample, title=f"{gesture} - Before Pre-processing")
+                # data_visualisation.plot_data_as_image(sample, label=f"{gesture} - Before pre-processing")
+                # data_visualisation.plot_data_as_graph(sample, title=f"{gesture} - Before pre-processing")
 
                 # We can pre-process the data here
                 sample = data_processing.preprocess_data(sample)
 
-                # data_visualisation.plot_data_as_image(sample, label=f"{gesture} - After preprocessing")
-                # data_visualisation.plot_data_as_graph(sample, title=f"{gesture} - After preprocessing")
+                # data_visualisation.plot_data_as_image(sample, label=f"{gesture} - After pre-processing")
+                # data_visualisation.plot_data_as_graph(sample, title=f"{gesture} - After pre-processing")
 
                 try:
                     sample = np.reshape(sample, input_shape)

@@ -4,7 +4,7 @@
 import tensorflow as tf
 import numpy as np
 
-def quantize_model( model, representative_data, write_to_file = False): 
+def quantize_model(model, representative_data, write_to_file = False): 
     converter = tf.lite.TFLiteConverter.from_keras_model(model)
     converter.optimizations = [tf.lite.Optimize.DEFAULT]
 
@@ -18,7 +18,7 @@ def quantize_model( model, representative_data, write_to_file = False):
 
     converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
     # converter._experimental_new_quantizer = True
-    converter.allow_custom_ops = True
+    # converter.allow_custom_ops = True
     # converter.target_spec.supported_types = [tf.int8]
 
     # converter.inference_input_type = tf.float32
